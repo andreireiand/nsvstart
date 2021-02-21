@@ -159,7 +159,7 @@ resource "aws_instance" "aws_test" {
   iam_instance_profile  = aws_iam_instance_profile.ssm_ec2_profile.name
   subnet_id             = element(aws_subnet.nsv_subnets.*.id, 1)
   availability_zone     = "eu-west-2a"
-  vpc_security_group_ids = [ "${aws_security_group.sg_nsv_inside.id}" ]
+  vpc_security_group_ids = [ aws_security_group.sg_nsv_inside.id ]
 
   tags = {
     Name = "LAN_EC2"
@@ -184,7 +184,7 @@ resource "aws_instance" "aws_nsv" {
   source_dest_check     = false
   subnet_id             = element(aws_subnet.nsv_subnets.*.id, 0)
   availability_zone     = "eu-west-2a"
-  vpc_security_group_ids = [ "${aws_security_group.sg_nsv_outside.id}", "${aws_security_group.sg_nsv_inside.id}" ]
+  vpc_security_group_ids = [ aws_security_group.sg_nsv_outside.id, aws_security_group.sg_nsv_inside.id ]
 
   tags = {
     Name = "NSv200"
@@ -204,7 +204,7 @@ resource "aws_eip" "nsv" {
 resource "aws_network_interface" "inside" {
   subnet_id             = element(aws_subnet.nsv_subnets.*.id, 1)
   source_dest_check     = false
-  security_groups       = [ "${aws_security_group.sg_nsv_inside.id}" ]
+  security_groups       = [ aws_security_group.sg_nsv_inside.id ]
   attachment {
     instance            = aws_instance.aws_nsv.id
     device_index        = 1
